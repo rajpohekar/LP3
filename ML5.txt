@@ -1,0 +1,41 @@
+## Code Cell:
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+## Code Cell:
+data = pd.read_csv("sales_data_sample.csv",encoding='latin1')
+
+## Code Cell:
+print(data.head())
+
+## Code Cell:
+print(data.columns)
+
+## Code Cell:
+numeric_data = data[["QUANTITYORDERED","SALES","PRICEEACH"]]
+numeric_data = numeric_data.dropna()   
+
+## Code Cell:
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(numeric_data)
+
+## Code Cell:
+inertia = []
+
+for k in range(1,11):
+    kmeans = KMeans(n_clusters=k,random_state=0)
+    kmeans.fit(scaled_data)
+    inertia.append(kmeans.inertia_)
+
+## Code Cell:
+plt.plot(range(1,11), inertia, marker='o')
+plt.title("elbow methos for optimal k")
+plt.xlabel("number of clusters")
+plt.ylabel("intertia ")
+plt.show()
+
+## Code Cell:
+""
+

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>B-Blockchain D-DAA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .experiment-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .experiment-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .experiment-button:hover {
+            background-color: #45a049;
+        }
+
+        button.copy-btn {
+            background-color: #008CBA;
+            padding: 10px 20px;
+            color: white;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.copy-btn:hover {
+            background-color: #007b8d;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Experiment Codes - Copy Code Directly</h1>
+
+    <div class="experiment-container">
+        <button class="experiment-button" onclick="copyExperimentCode('D1.txt')"> D1</button>
+        <button class="experiment-button" onclick="copyExperimentCode('D2.txt')"> D2</button>
+        <button class="experiment-button" onclick="copyExperimentCode('D3.txt')">D3</button>
+        <button class="experiment-button" onclick="copyExperimentCode('D4.txt')"> D4</button>
+        <button class="experiment-button" onclick="copyExperimentCode('D5.txt')"> D5</button>
+        <button class="experiment-button" onclick="copyExperimentCode('ML1.txt')">ML1</button>
+        <button class="experiment-button" onclick="copyExperimentCode('ML2.txt')">ML2</button>
+        <button class="experiment-button" onclick="copyExperimentCode('ML3.txt')">ML3</button>
+        <button class="experiment-button" onclick="copyExperimentCode('ML4.txt')">ML4</button>
+        <button class="experiment-button" onclick="copyExperimentCode('ML5.txt')">ML5</button>
+        <button class="experiment-button" onclick="copyExperimentCode('B1.txt')">B1</button>
+        <button class="experiment-button" onclick="copyExperimentCode('B2.txt')">B2</button>
+    </div>
+
+    <script>
+        // Function to load and copy the experiment code from an external file directly to clipboard
+        async function copyExperimentCode(fileName) {
+            try {
+                const response = await fetch(fileName);
+                const text = await response.text();
+                copyToClipboard(text);  // Copy the content directly to clipboard
+            } catch (error) {
+                alert('Failed to load the experiment code.');
+                console.error('Error loading file:', error);
+            }
+        }
+
+        // Function to copy the text to the clipboard
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            alert('Code copied to clipboard!');
+        }
+    </script>
+
+</body>
+
+</html>

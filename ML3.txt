@@ -1,0 +1,82 @@
+## Code Cell:
+import numpy as np
+print("NumPy version:", np.__version__)
+
+
+## Code Cell:
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+## Code Cell:
+import numpy as np
+print("NumPy version:", np.__version__)
+
+
+## Code Cell:
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+## Code Cell:
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import accuracy_score, confusion_matrix
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+## Code Cell:
+import tensorflow as tf
+print("TensorFlow version:", tf.__version__)
+print("Keras version:", tf.keras.__version__)
+print("GPU available:", tf.config.list_physical_devices('GPU'))
+
+
+
+## Code Cell:
+data = pd.read_csv("Churn_Modelling.csv")
+data.head()
+
+## Code Cell:
+X = data.drop(columns=['RowNumber','CustomerId','Surname','Exited'])
+y = data['Exited']
+
+## Code Cell:
+le_geo = LabelEncoder()
+le_gen = LabelEncoder()
+
+X['Geography'] = le_geo.fit_transform(X['Geography'])
+X['Gender'] = le_gen.fit_transform(X['Gender'])
+
+## Code Cell:
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+
+## Code Cell:
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+## Code Cell:
+model = Sequential()
+model.add(Dense(units=10,activation='relu',input_dim=X_train.shape[1]))
+model.add(Dense(units=10,activation='relu'))
+model.add(Dense(units=1,activation='sigmoid'))
+
+## Code Cell:
+model.compile(optimizer='adam', loss='binary_crossentropy',metrics=['accuracy'])
+
+## Code Cell:
+model.fit(X_train,y_train,epochs=20,batch_size=32,verbose=1)
+
+## Code Cell:
+y_pred = model.predict(X_test)
+y_pred = (y_pred > 0.5)
+
+print("Accuracy:", accuracy_score(y_test,y_pred))
+print("confusion_matrix",confusion_matrix(y_test,y_pred))
+
+## Code Cell:
+
+

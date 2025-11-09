@@ -1,0 +1,25 @@
+## Code Cell:
+def function(x):
+    return (x+3)**2
+
+def gradient(x):
+    return 2*(x+3)
+
+x = 2
+
+iteration_rate = 0.1
+
+iterations = 50
+
+print("starting at x=",x)
+
+for i in range(iterations):
+    grad = gradient(x)
+    x = x - iteration_rate * grad
+    print(f"Iterations {i+1} : x = {x:.5f}, y = {function(x):.5f}")
+    
+print("\n Local minima occurs at x =", round(x,2))    
+
+## Code Cell:
+
+

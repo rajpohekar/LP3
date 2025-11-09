@@ -1,0 +1,68 @@
+## Code Cell:
+import pandas as pd
+import numpy as np
+import seaborn as sns
+
+## Code Cell:
+ds = pd.read_csv("emails.csv")
+
+## Code Cell:
+ds.head()
+
+## Code Cell:
+ds = ds.drop(columns=["Email No."])
+
+## Code Cell:
+ds.head()
+
+## Code Cell:
+y = ds["Prediction"].values
+X = ds.drop(columns=["Prediction"]).values
+
+## Code Cell:
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+
+print(X_train.shape)
+print(y_train.shape)
+print(X_test.shape)
+print(y_test.shape)
+
+## Code Cell:
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+## Code Cell:
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train,y_train)
+y_pred = knn.predict(X_test)
+
+## Code Cell:
+print(classification_report(y_test,y_pred))
+sns.heatmap(confusion_matrix(y_test,y_pred), annot=True)
+plt.show()
+
+## Code Cell:
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+svm_model = SVC(kernel='linear')
+
+svm_model.fit(X_train,y_train)
+y_pred = svm_model.predict(X_test)
+
+## Code Cell:
+print("Accuracy:", accuracy_score(y_test,y_pred))
+print("\nconfusion matrix:\n", confusion_matrix(y_test,y_pred))
+print("\nClassification report:\n", classification_report(y_test,y_pred))
+plt.show()
+
+## Code Cell:
+
+

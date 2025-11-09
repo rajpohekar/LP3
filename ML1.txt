@@ -1,0 +1,139 @@
+## Code Cell:
+!pip install pandas
+!pip install numpy
+!pip install seaborn
+!pip install scikit-learn
+
+## Code Cell:
+import pandas as pd
+import numpy as np
+import seaborn as sns
+
+## Code Cell:
+ds = pd.read_csv("uber.csv")
+
+## Code Cell:
+ds.head()
+
+## Code Cell:
+ds.dtypes
+
+## Code Cell:
+ds.describe()
+
+## Code Cell:
+ds.isna().sum()
+
+ds.dropna(inplace=True)
+
+## Code Cell:
+ds.head()
+
+## Code Cell:
+ds.isna().sum()
+
+## Code Cell:
+ds["key"] = pd.to_datetime(ds["key"]).dt.strftime("%H").astype('float32')
+
+## Code Cell:
+ds = ds.rename(columns={"key":"time"})
+
+## Code Cell:
+ds.head()
+
+## Code Cell:
+ds.drop(["pickup_datetime"], axis=1, inplace=True)
+
+## Code Cell:
+ds.head()
+
+## Code Cell:
+ds.drop(["Unnamed: 0"], axis=1, inplace=True)
+
+## Code Cell:
+ds.head()
+
+## Code Cell:
+import math
+
+def eculidian_distance(lat1, lon1, lat2, lon2):
+    dlat = lat2-lat1
+    dlon = lon2-lon1
+    
+    dis = math.sqrt(dlat**2 + dlon**2)
+    return dis
+
+ds["distance"] = ds.apply(
+    
+    lambda row: eculidian_distance(
+        row['pickup_latitude'],
+        row['pickup_longitude'],
+        row['dropoff_latitude'],
+        row['dropoff_longitude']
+    ), axis=1
+)
+
+## Code Cell:
+sns.scatterplot(ds, y="fare_amount", x="passenger_count")
+
+
+## Code Cell:
+sns.boxplot(data=ds, y="fare_amount", x="passenger_count")
+
+## Code Cell:
+def remove_outliers(feature):
+    global ds
+    q3, q1 = np.percentile( ds[feature] , [75 , 25] )
+    iqr = q3 - q1
+    ds = ds[ (ds[feature] >= q1 - 1.5 * iqr) & (ds[feature] <= q3 + 1.5 * iqr) ]
+    
+remove_outliers("pickup_latitude")
+remove_outliers("pickup_longitude")
+remove_outliers("dropoff_latitude")
+remove_outliers("dropoff_latitude")
+
+## Code Cell:
+ds.corr(method="pearson")
+
+## Code Cell:
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+X = ds.drop('fare_amount', axis=1)
+y = ds['fare_amount']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.fit_transform(X_test)
+
+## Code Cell:
+from sklearn.linear_model import LinearRegression
+
+model = LinearRegression()
+model.fit(X_train_scaled, y_train)
+
+y_pred = model.predict(X_test_scaled)
+
+## Code Cell:
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
+
+print("R2 Score: ", r2_score(y_test, y_pred))
+print("RMS: ", np.sqrt(mean_squared_error(y_test, y_pred)))
+
+## Code Cell:
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score, mean_squared_error
+
+rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
+rf_model.fit(X_train_scaled, y_train)
+
+y_pred_rf = rf_model.predict(X_test_scaled)
+
+print("R2_score:", r2_score(y_test, y_pred_rf))
+print("RMSE:", np.sqrt(mean_squared_error(y_test, y_pred_rf)))
+
+## Code Cell:
+
+
