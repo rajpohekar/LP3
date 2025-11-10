@@ -1,36 +1,25 @@
-//SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract Bank{
+contract SimpleBank {
+    mapping(address => uint) private balances;
 
-    uint256 balance=0;
-    address public accOwner;
+    event Deposited(address user, uint amount);
+    event Withdrawn(address user, uint amount);
 
-    constructor() {
-        accOwner=msg.sender;
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
+        emit Deposited(msg.sender, msg.value);
     }
 
-    //deposite
-
-    function Deposite() public payable {
-        require(accOwner==msg.sender,"You are not an account owner");
-        require(msg.value>0, "Amount should be greater than 0!");
-        balance+=msg.value;
+    function withdraw(uint amount) public {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        balances[msg.sender] -= amount;
+        payable(msg.sender).transfer(amount);
+        emit Withdrawn(msg.sender, amount);
     }
 
-    //withdraw
-
-    function Withdraw() public payable {
-        require(accOwner==msg.sender,"You are not an account owner");
-        require(msg.value>0,"withdrawal money should be greater than 0");
-        balance-=msg.value;
-        
-    }
-
-    //showbalance
-
-    function showBalance() public view returns(uint256){
-        require(accOwner==msg.sender,"You are not a acc owner");
-        return balance;
+    function getBalance() public view returns (uint) {
+        return balances[msg.sender];
     }
 }
